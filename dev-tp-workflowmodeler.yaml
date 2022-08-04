@@ -1,0 +1,38 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: workflow-modeler
+  namespace: dev
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      name: workflow-modeler
+  template:
+    metadata:
+      labels:
+        name: workflow-modeler
+    spec:
+      containers:
+      - image: tsdevopsteam/platform:workflow-modeler-$BUILD_NUMBER
+        name: workflow-modeler
+        ports:
+        - containerPort: 80
+      imagePullSecrets:
+      - name: ts-platform
+
+
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: workflow-modeler
+  namespace: dev
+spec:
+  type: ClusterIP
+  ports:
+  - port: 80
+  selector:
+    name: workflow-modeler

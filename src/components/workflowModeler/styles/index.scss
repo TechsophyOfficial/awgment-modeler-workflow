@@ -1,0 +1,13 @@
+@import 'node_modules/bpmn-js/dist/assets/bpmn-font/css/bpmn-embedded';
+@import 'node_modules/diagram-js/assets/diagram-js';
+@import 'node_modules/diagram-js-minimap/assets/diagram-js-minimap';
+
+.djs-minimap {
+    &:not(.open) .toggle:before {
+        content: url('../../../assets/images/svg/map.svg');
+    }
+
+    &.open .toggle:before {
+        content: url('../../../assets/images/svg/close.svg');
+    }
+}

@@ -1,0 +1,39 @@
+.swagger-ui .information-container {
+    display: none !important;
+}
+
+.swagger-ui .scheme-container {
+    display: none !important;
+}
+.swagger-ui .models {
+    display: none !important;
+}
+
+.swagger-ui .opblock.is-open .opblock-summary {
+    border-bottom: none !important;
+}
+
+.swagger-ui .opblock .opblock-summary-path {
+    max-width: 100% !important;
+    font-size: 14px !important;
+}
+
+.swagger-ui .operation-tag-content h6 {
+    display: none !important;
+}
+
+.swagger-ui .wrapper {
+    padding: 0 !important;
+}
+
+.swagger-ui .wrapper .block {
+    padding: 0 !important;
+}
+
+.swagger-ui .opblock-tag {
+    display: none !important;
+}
+
+.swagger-ui .opblock-summary-control svg {
+    display: none !important;
+}
