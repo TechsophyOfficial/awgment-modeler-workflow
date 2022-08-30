@@ -16,6 +16,8 @@ import DataList from 'tsf_datalist/dist/components/dataList';
 import { ProcessProps } from 'components/workflowModeler';
 import WorkflowContext from 'contexts/worklfowContext/workflow-context';
 
+import AppConfig from '../../../../appConfig.js';
+
 const actions = [
     {
         actionId: ACTION_EDIT,
@@ -44,6 +46,9 @@ const MaximizeView = () => {
     const { processName, newBPMNDiagram } = getNewBPMNDiagram();
     const { rowsPerPage, sortBy, sortDirection, page } = workflowTableData;
 
+    const appData: any = useContext(AppConfig);
+    const apiGatewayUrl = appData.apiGatewayUrl;
+
     useEffect(() => {
         fetchAllWorkflows(rowsPerPage, page);
         // eslint-disable-next-line
@@ -63,7 +68,13 @@ const MaximizeView = () => {
 
     const classes = useStyles();
 
-    const fetchAllWorkflows = async (noOfRows, pageNo, orderBy = sortBy, orderDirection = sortDirection) => {
+    const fetchAllWorkflows = async (
+        noOfRows,
+        pageNo,
+        orderBy = sortBy,
+        orderDirection = sortDirection,
+        gatewayUrl = apiGatewayUrl,
+    ) => {
         openSpinner();
         const {
             success,
@@ -75,6 +86,7 @@ const MaximizeView = () => {
             page: pageNo,
             sortBy: orderBy,
             sortDirection: orderDirection,
+            apiGatewayUrl: gatewayUrl,
         });
         closeSpinner();
         if (success && data) {
@@ -105,9 +117,9 @@ const MaximizeView = () => {
         minimizeLayout();
     };
 
-    const getProcessDetails = async (id: string): Promise<void> => {
+    const getProcessDetails = async (id: string, gatewayUrl = apiGatewayUrl): Promise<void> => {
         openSpinner();
-        const { success, message, data } = await getWorkflowDetails(id);
+        const { success, message, data } = await getWorkflowDetails({ id: id, apiGatewayUrl: gatewayUrl });
         if (success && data) {
             const { name, version, content }: ProcessProps = data;
             const decodedWorkflowContent = atob(content);
@@ -132,7 +144,8 @@ const MaximizeView = () => {
 
     const deleteWorfklow = async (id: string) => {
         openSpinner();
-        const { success, message } = await deleteWorkflow(id);
+        const gatewayUrl = apiGatewayUrl;
+        const { success, message } = await deleteWorkflow({ id: id, apiGatewayUrl: gatewayUrl });
         if (success) {
             showConfirmation({
                 ...confirmation,
@@ -157,9 +170,9 @@ const MaximizeView = () => {
         }
     };
 
-    const actionClicked = (e: string, id: string) => {
+    const actionClicked = (e: string, id: string, apiGatewayUrl) => {
         if (e === ACTION_EDIT) {
-            getProcessDetails(id);
+            getProcessDetails(id, apiGatewayUrl);
         } else if (e === ACTION_DELETE) {
             showConfirmation({
                 ...confirmation,
@@ -187,7 +200,7 @@ const MaximizeView = () => {
     };
 
     const handleSearch = async (searchTerm: string): Promise<void> => {
-        const { success, data } = await getAllWorkflows({ paginate: false, searchTerm: searchTerm });
+        const { success, data } = await getAllWorkflows({ paginate: false, searchTerm: searchTerm, apiGatewayUrl });
         if (success && data) {
             const updateData = { records: data };
             updateWorkflowTableData({
@@ -207,8 +220,8 @@ const MaximizeView = () => {
                 showCreateNewButton={true}
                 showSearchFeild={true}
                 actions={actions}
-                actionClicked={(e, id) => actionClicked(e, id)}
-                rowClicked={({ id }) => getProcessDetails(id)}
+                actionClicked={(e, id, apiGatewayUrl) => actionClicked(e, id, apiGatewayUrl)}
+                rowClicked={({ id, apiGatewayUrl }) => getProcessDetails(id, apiGatewayUrl)}
                 handleChangePage={handleChangePage}
                 handleChangeRowsPerPage={handleChangeRowsPerPage}
                 handleSortRequest={handleSortRequest}
