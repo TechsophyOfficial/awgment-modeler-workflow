@@ -2,13 +2,14 @@ import { getWorkflowDetails } from '../WorkflowService';
 import { request } from '../../request';
 import { WORKFLOW_ENDPOINT } from 'constants/endpoints';
 import { useContext } from 'react';
-import appConfig from '../../appConfig.js';
+import AppConfig from '../../appConfig.js';
 
 jest.mock('../../request');
 
 const mockedRequest = request as jest.Mocked<typeof request>;
-const appData: any = useContext(appConfig);
-const apiGatewayUrl = appData.apiGatewayUrl;
+// const appData: any = useContext(AppConfig);
+// const apiGatewayUrl = appData.apiGatewayUrl;
+const apiGatewayUrl = 'google.com';
 
 const GET_WORKFLOW_ENDPOINT = `${apiGatewayUrl}${WORKFLOW_ENDPOINT}`;
 
