@@ -3,5 +3,6 @@
     "keycloakUrl": "https://keycloak-tsplatform.techsophy.com/",
     "keycloakRealm": "techsophy-platform",
     "keycloakClientId": "tp-ui-core",
-    "swaggerUrl": "https://api-gateway.techsophy.com"
+    "swaggerUrl": "https://api-gateway.techsophy.com",
+    "publicUrl": "/model/process/"
 }

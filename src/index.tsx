@@ -8,7 +8,7 @@ import KeycloakWrapper from './KeycloakWrapper';
 declare const window: any;
 
 window.renderWorkflowMFE = (containerId: string, history) => {
-    fetch('../config.json')
+    fetch('../process/config.json')
         .then((r) => r.json())
         .then((config) => {
             ReactDOM.render(<App history={history} config={config} />, document.getElementById(containerId));
@@ -22,7 +22,7 @@ window.unmountWorkflowMFE = (containerId: string) => {
 };
 
 if (!document.getElementById('WorkflowMFE-container')) {
-    fetch('../config.json')
+    fetch('../process/config.json')
         .then((r) => r.json())
         .then((config) => {
             ReactDOM.render(<KeycloakWrapper config={config} />, document.getElementById('root'));
