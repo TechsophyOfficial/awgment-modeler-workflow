@@ -170,9 +170,9 @@ const MaximizeView = () => {
         }
     };
 
-    const actionClicked = (e: string, id: string, apiGatewayUrl) => {
+    const actionClicked = (e: string, id: string, gatewayUrl = apiGatewayUrl) => {
         if (e === ACTION_EDIT) {
-            getProcessDetails(id, apiGatewayUrl);
+            getProcessDetails(id, gatewayUrl);
         } else if (e === ACTION_DELETE) {
             showConfirmation({
                 ...confirmation,
@@ -220,7 +220,7 @@ const MaximizeView = () => {
                 showCreateNewButton={true}
                 showSearchFeild={true}
                 actions={actions}
-                actionClicked={(e, id, apiGatewayUrl) => actionClicked(e, id, apiGatewayUrl)}
+                actionClicked={(e, id) => actionClicked(e, id)}
                 rowClicked={({ id, apiGatewayUrl }) => getProcessDetails(id, apiGatewayUrl)}
                 handleChangePage={handleChangePage}
                 handleChangeRowsPerPage={handleChangeRowsPerPage}
