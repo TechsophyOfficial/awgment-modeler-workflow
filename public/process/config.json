@@ -4,5 +4,5 @@
     "keyCloakRealm": "techsophy-platform",
     "keyCloakClientId": "tp-ui-core",
     "swaggerUrl": "https://api-gateway.techsophy.com",
-    "publicUrl": "/model/process/"
+    "publicWorkflowUrl": "/model/process/"
 }

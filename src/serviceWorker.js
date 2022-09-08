@@ -35,7 +35,7 @@ export function register(config, publicUrls, nodeEnv) {
 
         window.addEventListener('load', () => {
             const appData = React.useContext(AppConfig);
-            const publicUrls = appData.publicUrl;
+            const publicUrls = appData.publicWorkflowUrl;
             const nodeEnv = appData.nodeEnv;
             // const swUrl = `${process.env.PUBLIC_URL}/service-worker.js`;
             const swUrl = `${publicUrls}/service-worker.js`;
