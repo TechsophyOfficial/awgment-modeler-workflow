@@ -13,7 +13,7 @@ workflows:
 jobs:
   releaseUI:
     docker:
-     - image: cimg/node:16.17.0-browsers
+     - image: cimg/node:14.20.0-browsers
     
     steps:
       - checkout
