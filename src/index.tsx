@@ -8,7 +8,7 @@ import KeycloakWrapper from './KeycloakWrapper';
 declare const window: any;
 
 window.renderWorkflowMFE = (containerId: string, history) => {
-    fetch('../process/config.json')
+    fetch('../model/process/config.json')
         .then((r) => r.json())
         .then((config) => {
             ReactDOM.render(<App history={history} config={config} />, document.getElementById(containerId));
