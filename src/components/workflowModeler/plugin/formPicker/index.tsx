@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback, useContext } from 'react';
 import { Tab } from '@mui/material';
 import makeStyles from '@mui/styles/makeStyles';
 import { BpmnFactory, CommandStack, ModelerElement, Command } from 'camunda-modeler-types';
@@ -10,6 +10,7 @@ import { FormDetails, SingleForm } from './FormTypes';
 import { TabContext, TabList, TabPanel } from '@mui/lab';
 import TabPanelContent from './TabPanelContent';
 import { getProperties } from 'components/workflowModeler/ModelerUtils';
+import AppConfig from '../../../../appConfig.js';
 
 interface FormPickerProps {
     element: ModelerElement;
@@ -52,12 +53,17 @@ const FormPicker: React.FC<FormPickerProps> = ({ element, bpmnFactory, commandSt
     const [componentDetails, setComponentDetails] = useState<any>();
     const [customComponent, setCustomComponent] = useState<boolean>(false);
 
+    const appData: any = useContext(AppConfig);
+    const apiGatewayUrl = appData.apiGatewayUrl;
+
     const handleChange = (_event: React.ChangeEvent<{}>, newValue: string) => {
         setActiveTabValue(newValue);
     };
 
-    const fetchAllFormsAndComponents = useCallback(async (): Promise<void> => {
-        const { success = false, data }: { success: boolean; data?: FormDetails[] } = await getAllFormsAndComponents();
+    const fetchAllFormsAndComponents = useCallback(async (apiGatewayUrl): Promise<void> => {
+        const { success = false, data }: { success: boolean; data?: FormDetails[] } = await getAllFormsAndComponents(
+            apiGatewayUrl,
+        );
         if (success && data) {
             const forms = data.filter((form) => form.type === 'form');
             const components = data.filter((component) => component.type === 'component');
@@ -67,18 +73,21 @@ const FormPicker: React.FC<FormPickerProps> = ({ element, bpmnFactory, commandSt
     }, []);
 
     const getFormDetails = async (id: string): Promise<void> => {
-        const { success, data } = await getFormOrComponentDetails(id);
-        if (success && data) {
-            if (data.hasOwnProperty('components') && data.components.hasOwnProperty('state')) {
-                setComponentDetails(data.components.state);
-                setCustomComponent(true);
+        if (apiGatewayUrl) {
+            const gatewayUrl = apiGatewayUrl;
+            const { success, data } = await getFormOrComponentDetails({ id: id, apiGatewayUrl: gatewayUrl });
+            if (success && data) {
+                if (data.hasOwnProperty('components') && data.components.hasOwnProperty('state')) {
+                    setComponentDetails(data.components.state);
+                    setCustomComponent(true);
+                }
+                setFormId(id);
+                setFormDetails(data);
             }
-            setFormId(id);
-            setFormDetails(data);
         }
     };
     useEffect(() => {
-        fetchAllFormsAndComponents();
+        if (apiGatewayUrl) fetchAllFormsAndComponents(apiGatewayUrl);
     }, [fetchAllFormsAndComponents]);
 
     useEffect(() => {

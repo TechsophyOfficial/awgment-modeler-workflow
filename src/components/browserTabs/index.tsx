@@ -6,7 +6,7 @@ import TabsLoop from './TabsLoop';
 import WorkflowModeler from 'components/workflowModeler';
 
 interface BrowserTabsProps {
-    loadRecords: () => void;
+    loadRecords: (apiGatewayUrl?: string) => void;
 }
 
 const BrowserTabs: React.FC<BrowserTabsProps> = ({ loadRecords }) => {

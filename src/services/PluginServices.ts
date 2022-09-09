@@ -2,13 +2,16 @@ import { request, ResponseProps } from '../request';
 import { FORM_RUNTIME_ENDPOINT, RULE_ENDPOINT } from '../constants/endpoints';
 import { FormDetails, SingleForm } from '../components/workflowModeler/plugin/formPicker/FormTypes';
 
-export const FORM_RUNTIME_API_ENDPOINT = `${process.env.REACT_APP_API_GATEWAY_URL}${FORM_RUNTIME_ENDPOINT}`;
-export const RULE_API_ENDPOINT = `${process.env.REACT_APP_API_GATEWAY_URL}${RULE_ENDPOINT}`;
+// export const FORM_RUNTIME_API_ENDPOINT = `${process.env.REACT_APP_API_GATEWAY_URL}${FORM_RUNTIME_ENDPOINT}`;
+// export const RULE_API_ENDPOINT = `${process.env.REACT_APP_API_GATEWAY_URL}${RULE_ENDPOINT}`;
 
-export const getAllFormsAndComponents = async (): Promise<{
+export const getAllFormsAndComponents = async (
+    apiGatewayUrl,
+): Promise<{
     success: boolean;
     data?: FormDetails[];
 }> => {
+    const FORM_RUNTIME_API_ENDPOINT = `${apiGatewayUrl}${FORM_RUNTIME_ENDPOINT}`;
     const r: ResponseProps = (await request.get(`${FORM_RUNTIME_API_ENDPOINT}?include-content=false`)) as ResponseProps;
 
     if (r.success) {
@@ -17,9 +20,11 @@ export const getAllFormsAndComponents = async (): Promise<{
     return { success: false };
 };
 
-export const getFormOrComponentDetails = async (
-    id: string,
-): Promise<{ success: boolean; data?: SingleForm; message?: string }> => {
+export const getFormOrComponentDetails = async ({
+    id,
+    apiGatewayUrl,
+}): Promise<{ success: boolean; data?: SingleForm; message?: string }> => {
+    const FORM_RUNTIME_API_ENDPOINT = `${apiGatewayUrl}${FORM_RUNTIME_ENDPOINT}`;
     const r: ResponseProps = (await request.get(`${FORM_RUNTIME_API_ENDPOINT}/${id}`)) as ResponseProps;
 
     if (r.success) {

@@ -44,7 +44,8 @@
     },
     "scripts": {
         "start": "craco start",
-        "build": "craco build",
+        "build": "PUBLIC_URL=/model/process craco build",
+
         "build:development": "env-cmd -f .env.development craco build",
         "build:qa": "env-cmd -f .env.qa craco build",
         "build:production": "env-cmd -f .env.production craco build",
@@ -63,18 +64,11 @@
     "eslintConfig": {
         "extends": "react-app"
     },
-    "browserslist": {
-        "production": [
-            ">0.2%",
-            "not dead",
-            "not op_mini all"
-        ],
-        "development": [
-            "last 1 chrome version",
-            "last 1 firefox version",
-            "last 1 safari version"
-        ]
-    },
+    "browserslist": [
+        ">0.2%",
+        "not dead",
+        "not op_mini all"
+    ],
     "devDependencies": {
         "@craco/craco": "^6.4.0",
         "@testing-library/jest-dom": "^5.11.9",
