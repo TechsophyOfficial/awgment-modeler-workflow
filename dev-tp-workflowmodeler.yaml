@@ -17,6 +17,9 @@ spec:
       containers:
       - image: tsdevopsteam/platform:workflow-modeler-$BUILD_NUMBER
         name: workflow-modeler
+        envFrom:
+        - configMapRef:
+            name: workflowui-env
         ports:
         - containerPort: 80
       imagePullSecrets:
