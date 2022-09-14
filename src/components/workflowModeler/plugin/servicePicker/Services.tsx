@@ -1,4 +1,4 @@
-import React, { Dispatch, SetStateAction, useContext, useEffect, useRef, useState } from 'react';
+import React, { Dispatch, SetStateAction, useEffect, useRef, useState } from 'react';
 import 'react-accessible-accordion/dist/fancy-example.css';
 import 'swagger-ui-react/swagger-ui.css';
 import './swagger-overrides.css';
@@ -43,7 +43,6 @@ import {
     AccordionItemPanel,
 } from 'react-accessible-accordion';
 
-import AppConfig from '../../../../appConfig.js';
 interface FormattedSchema {
     [key: string]: string;
 }
@@ -66,6 +65,7 @@ export interface SelectedOperationWithSpec extends PickedOperationInfo {
 }
 
 interface ServicePickerProps {
+    appData: any;
     element?: ModelerElement;
     commandStack: CommandStack;
     bpmnFactory?: BpmnFactory;
@@ -125,6 +125,7 @@ export const updateUiWithSelectedOperation = (
 
 // ======================== Service Component ==============================================
 export const Services: React.FC<ServicePickerProps> = ({
+    appData,
     element,
     commandStack,
     bpmnFactory,
@@ -139,8 +140,6 @@ export const Services: React.FC<ServicePickerProps> = ({
     const [selectedOperation, setSelectedOperation] = useState<SelectedOperationWithSpec | undefined>();
     const [prevSelectedOperationInfo, setPrevSelectedOperationInfo] = useState<PickedOperationInfo | undefined>();
     const [prevSelectedOperationId, setPrevSelectedOperationId] = useState<string | undefined>();
-
-    const appData: any = useContext(AppConfig);
 
     const swaggerUrl = appData.swaggerUrl; //can be used as state if value not updated properly
     const apiGatewayUrl = appData.apiGatewayUrl; //can be used as state if value not updated properly
