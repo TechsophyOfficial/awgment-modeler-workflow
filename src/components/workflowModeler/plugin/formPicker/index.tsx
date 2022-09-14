@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback, useContext } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { Tab } from '@mui/material';
 import makeStyles from '@mui/styles/makeStyles';
 import { BpmnFactory, CommandStack, ModelerElement, Command } from 'camunda-modeler-types';
@@ -10,9 +10,9 @@ import { FormDetails, SingleForm } from './FormTypes';
 import { TabContext, TabList, TabPanel } from '@mui/lab';
 import TabPanelContent from './TabPanelContent';
 import { getProperties } from 'components/workflowModeler/ModelerUtils';
-import AppConfig from '../../../../appConfig.js';
 
 interface FormPickerProps {
+    appData: any;
     element: ModelerElement;
     commandStack: CommandStack;
     bpmnFactory: BpmnFactory;
@@ -40,7 +40,7 @@ const useStyles = makeStyles((theme) => ({
     },
 }));
 
-const FormPicker: React.FC<FormPickerProps> = ({ element, bpmnFactory, commandStack, saved, cancelled }) => {
+const FormPicker: React.FC<FormPickerProps> = ({ appData, element, bpmnFactory, commandStack, saved, cancelled }) => {
     const classes = useStyles();
 
     const bo = getBusinessObject(element);
@@ -53,7 +53,6 @@ const FormPicker: React.FC<FormPickerProps> = ({ element, bpmnFactory, commandSt
     const [componentDetails, setComponentDetails] = useState<any>();
     const [customComponent, setCustomComponent] = useState<boolean>(false);
 
-    const appData: any = useContext(AppConfig);
     const apiGatewayUrl = appData.apiGatewayUrl;
 
     const handleChange = (_event: React.ChangeEvent<{}>, newValue: string) => {
