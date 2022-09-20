@@ -24,6 +24,8 @@ import SpinnerContext from 'contexts/spinnerContext/spinner-context';
 import NotificationContext from 'contexts/notificationContext/notification-context';
 import ConfirmationContext from 'contexts/confirmationContext/confirmation-context';
 
+import AppConfig from '../../appConfig.js';
+
 interface Id {
     id: string;
 }
@@ -89,6 +91,10 @@ const WorkflowModeler: React.FC<WorkflowModelerProps> = ({ tab, loadRecords }) =
         version: '',
         deploymentName: '',
     });
+
+    const appData: any = useContext(AppConfig);
+    const apiGatewayUrl = appData.apiGatewayUrl;
+    console.log('111111', apiGatewayUrl);
 
     const useStyles = makeStyles((theme) => ({
         root: {
@@ -228,6 +234,7 @@ const WorkflowModeler: React.FC<WorkflowModelerProps> = ({ tab, loadRecords }) =
 
     const onSaveWorkflow = async (): Promise<void> => {
         const { id } = tab;
+        const gatewayUrl = apiGatewayUrl;
         const { name } = formState;
         let processData: SaveProcessProps | ProcessProps = {
             name: name,
@@ -242,7 +249,10 @@ const WorkflowModeler: React.FC<WorkflowModelerProps> = ({ tab, loadRecords }) =
         }
 
         openSpinner();
-        const { success, data, message } = await saveWorkflow(processData);
+        const { success, data, message } = await saveWorkflow({
+            processDetails: processData,
+            apiGatewayUrl: gatewayUrl,
+        });
         if (success && data) {
             const { id: newId, version } = data;
             setOpenFormModal(false);
@@ -267,8 +277,13 @@ const WorkflowModeler: React.FC<WorkflowModelerProps> = ({ tab, loadRecords }) =
     const onDeployWorkflow = async (): Promise<void> => {
         if (tab.id) {
             const { deploymentName } = formState;
+            const gatewayUrl = apiGatewayUrl;
             openSpinner();
-            const { success } = await deployWorkflow(deploymentName, currentXML);
+            const { success } = await deployWorkflow({
+                deploymentName: deploymentName,
+                currentXml: currentXML,
+                apiGatewayUrl: gatewayUrl,
+            });
             closeSpinner();
             setOpenFormModal(false);
             if (success) {
@@ -295,8 +310,9 @@ const WorkflowModeler: React.FC<WorkflowModelerProps> = ({ tab, loadRecords }) =
 
     const onDeleteWorkflow = async (): Promise<void> => {
         if (tab.id) {
+            const gatewayUrl = apiGatewayUrl;
             openSpinner();
-            const { success = false, message } = await deleteWorkflow(tab.id);
+            const { success = false, message } = await deleteWorkflow({ id: tab.id, apiGatewayUrl: gatewayUrl });
             if (success) {
                 showConfirmation({
                     ...confirmation,

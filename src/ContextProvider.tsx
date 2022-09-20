@@ -9,6 +9,7 @@ import WorkflowState from 'contexts/worklfowContext/WorkflowState';
 import TabState from 'contexts/tabContext/TabState';
 import { ThemeProvider, Theme } from '@mui/material/styles';
 import { StyledEngineProvider } from '@mui/material';
+import AppConfig from './appConfig.js';
 
 declare module '@mui/styles/defaultTheme' {
     // eslint-disable-next-line @typescript-eslint/no-empty-interface
@@ -18,12 +19,17 @@ declare module '@mui/styles/defaultTheme' {
 const ContextProvider: React.FC = ({ children }) => {
     const { theme, updateTheme } = useContext(ThemeContext);
 
+    const appData: any = useContext(AppConfig);
+    const gatewayUrl = appData.apiGatewayUrl;
+
     useEffect(() => {
         const setTheme = async () => {
-            const selectedThemeRes = await getSelectedTheme();
-            if (selectedThemeRes.success) {
-                const selectedTheme = selectedThemeRes.data as ThemeProps;
-                updateTheme(selectedTheme);
+            if (gatewayUrl) {
+                const selectedThemeRes = await getSelectedTheme({ apiGatewayUrl: gatewayUrl });
+                if (selectedThemeRes.success) {
+                    const selectedTheme = selectedThemeRes.data as ThemeProps;
+                    updateTheme(selectedTheme);
+                }
             }
         };
         setTheme();

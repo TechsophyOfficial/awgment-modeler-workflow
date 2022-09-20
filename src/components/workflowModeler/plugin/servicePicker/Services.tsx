@@ -65,6 +65,7 @@ export interface SelectedOperationWithSpec extends PickedOperationInfo {
 }
 
 interface ServicePickerProps {
+    appData: any;
     element?: ModelerElement;
     commandStack: CommandStack;
     bpmnFactory?: BpmnFactory;
@@ -124,6 +125,7 @@ export const updateUiWithSelectedOperation = (
 
 // ======================== Service Component ==============================================
 export const Services: React.FC<ServicePickerProps> = ({
+    appData,
     element,
     commandStack,
     bpmnFactory,
@@ -138,6 +140,9 @@ export const Services: React.FC<ServicePickerProps> = ({
     const [selectedOperation, setSelectedOperation] = useState<SelectedOperationWithSpec | undefined>();
     const [prevSelectedOperationInfo, setPrevSelectedOperationInfo] = useState<PickedOperationInfo | undefined>();
     const [prevSelectedOperationId, setPrevSelectedOperationId] = useState<string | undefined>();
+
+    const swaggerUrl = appData.swaggerUrl; //can be used as state if value not updated properly
+    const apiGatewayUrl = appData.apiGatewayUrl; //can be used as state if value not updated properly
 
     const updateSelectedOperation = (
         service: OpenAPIObject,
@@ -164,14 +169,14 @@ export const Services: React.FC<ServicePickerProps> = ({
         }));
     };
 
-    const fetchSwaggerApi = async (): Promise<void> => {
-        const specs = await getSwaggerSpecsList();
+    const fetchSwaggerApi = async (swaggerUrl): Promise<void> => {
+        const specs = await getSwaggerSpecsList(swaggerUrl);
         const filteredSpecs = specs.filter((spec) => spec.success !== false);
         setSwaggerSpecs(filteredSpecs);
     };
 
     useEffect(() => {
-        fetchSwaggerApi().then(() => console.log('fetched API spec'));
+        if (swaggerUrl) fetchSwaggerApi(swaggerUrl).then(() => console.log('fetched API spec'));
     }, []);
 
     useEffect(() => {
@@ -342,7 +347,7 @@ export const Services: React.FC<ServicePickerProps> = ({
                                 : []
                         }>
                         {swaggerSpecs.map((spec, index) => {
-                            const swaggerUrl: string = process.env.REACT_APP_API_GATEWAY_URL as string;
+                            const swaggerUrl: string = apiGatewayUrl;
                             // eslint-disable-next-line @typescript-eslint/ban-ts-comment
                             // @ts-ignore
                             spec.servers[0] = { ...spec.servers[0], url: swaggerUrl };
