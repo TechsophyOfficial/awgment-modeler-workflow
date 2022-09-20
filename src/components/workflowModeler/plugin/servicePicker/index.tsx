@@ -4,6 +4,7 @@ import { getPickedOperationProperty, RuleOperationInfo, setPickedOperationProper
 import { PickedOperationInfo, Services } from './Services';
 
 interface ServicePickerProps {
+    appData: any;
     element: ModelerElement;
     bpmnFactory: BpmnFactory;
     commandStack: CommandStack;
@@ -11,8 +12,16 @@ interface ServicePickerProps {
     cancelled: boolean;
 }
 
-const ServicePicker: React.FC<ServicePickerProps> = ({ element, bpmnFactory, commandStack, saved, cancelled }) => (
+const ServicePicker: React.FC<ServicePickerProps> = ({
+    appData,
+    element,
+    bpmnFactory,
+    commandStack,
+    saved,
+    cancelled,
+}) => (
     <Services
+        appData={appData}
         element={element}
         commandStack={commandStack}
         bpmnFactory={bpmnFactory}

@@ -13,6 +13,8 @@ import getNewBPMNDiagram from 'constants/newBPMNDiagram';
 import EmptyCardLayout from 'tsf_empty_card/dist/components/emptyCardLayout';
 import { ProcessProps } from 'components/workflowModeler';
 
+import AppConfig from '../../../../appConfig.js';
+
 const MinimizeView = () => {
     const {
         layout: { isHidden, isMinimized },
@@ -65,23 +67,34 @@ const MinimizeView = () => {
     const { pushNotification } = useContext(NotificationContext);
     const { processName, newBPMNDiagram } = getNewBPMNDiagram();
 
-    const fetchAllWorkflows = useCallback(async () => {
-        openSpinner();
-        const { success, data, message = '' } = await getAllWorkflows({ paginate: false, sortBy: 'updatedOn' });
-        closeSpinner();
-        if (success && data) {
-            updateWorkflowTableData(data);
-        } else {
-            pushNotification({
-                isOpen: true,
-                message: message,
-                type: 'error',
-            });
-        }
-    }, [openSpinner, closeSpinner, pushNotification]);
+    const appData: any = useContext(AppConfig);
+    const apiGatewayUrl: string = appData.apiGatewayUrl;
+
+    const fetchAllWorkflows = useCallback(
+        async (gatewayUrl = apiGatewayUrl) => {
+            openSpinner();
+            const apiGatewayUrl = gatewayUrl;
+            const {
+                success,
+                data,
+                message = '',
+            } = await getAllWorkflows({ paginate: false, sortBy: 'updatedOn', apiGatewayUrl });
+            closeSpinner();
+            if (success && data) {
+                updateWorkflowTableData(data);
+            } else {
+                pushNotification({
+                    isOpen: true,
+                    message: message,
+                    type: 'error',
+                });
+            }
+        },
+        [openSpinner, closeSpinner, pushNotification],
+    );
 
     useEffect(() => {
-        fetchAllWorkflows();
+        if (apiGatewayUrl) fetchAllWorkflows(apiGatewayUrl);
         // eslint-disable-next-line
     }, []);
 
@@ -92,9 +105,9 @@ const MinimizeView = () => {
         }
     };
 
-    const getProcessDetails = async (id: string): Promise<void> => {
+    const getProcessDetails = async (id: string, gatewayUrl = apiGatewayUrl): Promise<void> => {
         openSpinner();
-        const { success, message, data } = await getWorkflowDetails(id);
+        const { success, message, data } = await getWorkflowDetails({ id: id, apiGatewayUrl: gatewayUrl });
         if (success && data) {
             const { name, version, content }: ProcessProps = data;
             const decodedWorkflowContent = atob(content);

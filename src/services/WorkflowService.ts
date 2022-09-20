@@ -29,13 +29,14 @@ export interface WorkflowReqProps {
     sortBy?: string;
     sortDirection?: 'asc' | 'desc';
     searchTerm?: string;
+    apiGatewayUrl?: string;
 }
 
 export type Action = 'add' | 'update' | 'delete' | 'activate' | 'deactivate';
 export type Decision = 'approve' | 'reject';
 
-export const GET_WORKFLOW_ENDPOINT = `${process.env.REACT_APP_API_GATEWAY_URL}${WORKFLOW_ENDPOINT}`;
-export const DEPLOY_WORKFLOW_ENDPOINT = `${process.env.REACT_APP_API_GATEWAY_URL}${WORKFLOW_DEPLOY}`;
+// export const GET_WORKFLOW_ENDPOINT = `${process.env.REACT_APP_API_GATEWAY_URL}${WORKFLOW_ENDPOINT}`;
+// export const DEPLOY_WORKFLOW_ENDPOINT = `${process.env.REACT_APP_API_GATEWAY_URL}${WORKFLOW_DEPLOY}`;
 
 // API calls for Workflow
 
@@ -46,7 +47,9 @@ export const getAllWorkflows = async ({
     sortBy = '',
     sortDirection = 'desc',
     searchTerm = '',
+    apiGatewayUrl,
 }: WorkflowReqProps): Promise<{ success: boolean; message?: string; data?: WorkflowProps | any }> => {
+    const GET_WORKFLOW_ENDPOINT = `${apiGatewayUrl}${WORKFLOW_ENDPOINT}`;
     const sort = sortBy && sortDirection ? `&sort-by=${sortBy}:${sortDirection}` : '';
     const search = searchTerm ? `&q=${searchTerm}` : '';
     let URL = `${GET_WORKFLOW_ENDPOINT}?include-content=false`;
@@ -69,9 +72,11 @@ export const getAllWorkflows = async ({
     return { success: false, message: 'Unable to fetch workflows' };
 };
 
-export const getWorkflowDetails = async (
-    id: string,
-): Promise<{ success: boolean; data?: ProcessProps; message?: string }> => {
+export const getWorkflowDetails = async ({
+    id,
+    apiGatewayUrl,
+}): Promise<{ success: boolean; data?: ProcessProps; message?: string }> => {
+    const GET_WORKFLOW_ENDPOINT = `${apiGatewayUrl}${WORKFLOW_ENDPOINT}`;
     const r: ResponseProps = (await request.get(`${GET_WORKFLOW_ENDPOINT}/${id}`)) as ResponseProps;
     if (r && r.success) {
         const process = r.data as ProcessProps;
@@ -80,9 +85,12 @@ export const getWorkflowDetails = async (
     return { success: false };
 };
 
-export const saveWorkflow = async (
+export const saveWorkflow = async ({
     processDetails,
-): Promise<{ success: boolean; data?: SaveProcessResponse; message?: string }> => {
+    apiGatewayUrl,
+}): Promise<{ success: boolean; data?: SaveProcessResponse; message?: string }> => {
+    debugger;
+    const GET_WORKFLOW_ENDPOINT = `${apiGatewayUrl}${WORKFLOW_ENDPOINT}`;
     const r: ResponseProps = (await request.postForm(GET_WORKFLOW_ENDPOINT, processDetails)) as ResponseProps;
     if (r.success) {
         const process = r.data as SaveProcessResponse;
@@ -91,7 +99,8 @@ export const saveWorkflow = async (
     return { success: false };
 };
 
-export const deployWorkflow = async (deploymentName: string, currentXml: string): Promise<{ success: boolean }> => {
+export const deployWorkflow = async ({ deploymentName, currentXml, apiGatewayUrl }): Promise<{ success: boolean }> => {
+    const DEPLOY_WORKFLOW_ENDPOINT = `${apiGatewayUrl}${WORKFLOW_DEPLOY}`;
     const blob = new Blob([currentXml]);
     const fileOfBlob = new File([blob], `${deploymentName}.bpmn`);
     const params = {
@@ -105,7 +114,8 @@ export const deployWorkflow = async (deploymentName: string, currentXml: string)
     return { success: false };
 };
 
-export const deleteWorkflow = async (id: string): Promise<{ success: boolean; message?: string }> => {
+export const deleteWorkflow = async ({ id, apiGatewayUrl }): Promise<{ success: boolean; message?: string }> => {
+    const GET_WORKFLOW_ENDPOINT = `${apiGatewayUrl}${WORKFLOW_ENDPOINT}`;
     const res: ResponseProps = (await request.delete(`${GET_WORKFLOW_ENDPOINT}/${id}`)) as ResponseProps;
     if (res.success) {
         return { success: res.success, message: res.message };
