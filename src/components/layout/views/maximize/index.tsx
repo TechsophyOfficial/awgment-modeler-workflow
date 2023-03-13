@@ -199,7 +199,26 @@ const MaximizeView = () => {
         await fetchAllWorkflows(rowsPerPage, 1, cellId, isAsc);
     };
 
-    const handleSearch = async (searchTerm: string): Promise<void> => {
+    const handleSearch = async (
+        searchTerm: string,
+        noOfRows = 5,
+        pageNo = 1,
+        orderBy = sortBy,
+        orderDirection = sortDirection,
+        gatewayUrl = apiGatewayUrl,
+    ): Promise<void> => {
+        const isSearchTermEmpty = searchTerm === '' || searchTerm === undefined || searchTerm === null;
+        if (isSearchTermEmpty) {
+            fetchAllWorkflows(
+                (noOfRows = 5),
+                (pageNo = 1),
+                (orderBy = sortBy),
+                (orderDirection = sortDirection),
+                (gatewayUrl = apiGatewayUrl),
+            );
+            return;
+        }
+
         const { success, data } = await getAllWorkflows({ paginate: false, searchTerm: searchTerm, apiGatewayUrl });
         if (success && data) {
             const updateData = { records: data };
