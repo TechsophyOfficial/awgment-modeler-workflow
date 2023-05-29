@@ -8,6 +8,7 @@ import KeycloakWrapper from './KeycloakWrapper';
 declare const window: any;
 
 window.renderWorkflowMFE = (containerId: string, history, config) => {
+    console.log('workflow container called');
     console.log(config);
     // fetch('../model/process/config.json')
     //     .then((r) => r.json())
@@ -23,7 +24,7 @@ window.unmountWorkflowMFE = (containerId: string) => {
 };
 
 if (!document.getElementById('WorkflowMFE-container')) {
-    fetch(`https://demo1691447.mockable.io/api/awgment/v1/tenants${window.location.pathname}`)
+    fetch('../process/config.json')
         .then((r) => r.json())
         .then((config) => {
             ReactDOM.render(<KeycloakWrapper config={config} />, document.getElementById('root'));
