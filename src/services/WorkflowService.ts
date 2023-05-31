@@ -89,7 +89,6 @@ export const saveWorkflow = async ({
     processDetails,
     apiGatewayUrl,
 }): Promise<{ success: boolean; data?: SaveProcessResponse; message?: string }> => {
-    debugger;
     const GET_WORKFLOW_ENDPOINT = `${apiGatewayUrl}${WORKFLOW_ENDPOINT}`;
     const r: ResponseProps = (await request.postForm(GET_WORKFLOW_ENDPOINT, processDetails)) as ResponseProps;
     if (r.success) {
@@ -99,19 +98,23 @@ export const saveWorkflow = async ({
     return { success: false };
 };
 
-export const deployWorkflow = async ({ deploymentName, currentXml, apiGatewayUrl }): Promise<{ success: boolean }> => {
+export const deployWorkflow = async ({
+    deploymentName,
+    currentXml,
+    apiGatewayUrl,
+}): Promise<{ success: boolean; message?: string }> => {
     const DEPLOY_WORKFLOW_ENDPOINT = `${apiGatewayUrl}${WORKFLOW_DEPLOY}`;
     const blob = new Blob([currentXml]);
     const fileOfBlob = new File([blob], `${deploymentName}.bpmn`);
     const params = {
-        'deployment-name': deploymentName,
+        name: deploymentName,
         file: fileOfBlob,
     };
-    const response = (await request.postForm(DEPLOY_WORKFLOW_ENDPOINT, params)) as unknown[];
-    if (!Object.keys(response).includes('success')) {
-        return { success: true };
+    const res: ResponseProps = (await request.postForm(DEPLOY_WORKFLOW_ENDPOINT, params)) as ResponseProps;
+    if (res.success) {
+        return { success: res.success, message: res.message };
     }
-    return { success: false };
+    return { success: false, message: res.message };
 };
 
 export const deleteWorkflow = async ({ id, apiGatewayUrl }): Promise<{ success: boolean; message?: string }> => {
